@@ -127,25 +127,47 @@ public class EnderchestDisplay {
 									String title = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(player, InteractiveChat.enderTitle));
 									
 									if (!InteractiveChat.enderDisplay.containsKey(time)) {
-										Inventory inv =  Bukkit.createInventory(null, 54, title);;
-
-										BetterEnderChest betterEnderChest = (BetterEnderChest) Bukkit.getPluginManager().getPlugin("BetterEnderChest");
-										ChestOwner chestOwner = betterEnderChest.getChestOwners().playerChest(player.getLocalPlayer());
-										WorldGroup group = betterEnderChest.getWorldGroupManager().getGroupByWorld(player.getLocalPlayer().getWorld());
-										betterEnderChest.getChestCache().getInventory(chestOwner, group, new Consumer<Inventory>() {
-											@Override
-											public void consume(Inventory inventory) {
-												for (int j = 0; j < inventory.getSize(); j = j + 1) {
-													if (inventory.getItem(j) != null) {
-														if (!inventory.getItem(j).getType().equals(Material.AIR)) {
-															inv.setItem(j, inventory.getItem(j).clone());
+										Inventory inv;
+										if(!ConfigManager.getConfig().getBoolean("ItemDisplay.EnderChest.UseBetterEnderChest")) {
+											inv = Bukkit.createInventory(null, 27, title);
+											for (int j = 0; j < player.getEnderChest().getSize(); j = j + 1) {
+												if (player.getEnderChest().getItem(j) != null) {
+													if (!player.getEnderChest().getItem(j).getType().equals(Material.AIR)) {
+														inv.setItem(j, player.getEnderChest().getItem(j).clone());
+													}
+												}
+											}
+										} else {
+											if(Bukkit.getServer().getPluginManager().getPlugin("BetterEnderChest") != null) {
+												inv = Bukkit.createInventory(null, 54, title);
+												BetterEnderChest betterEnderChest = (BetterEnderChest) Bukkit.getPluginManager().getPlugin("BetterEnderChest");
+												ChestOwner chestOwner = betterEnderChest.getChestOwners().playerChest(player.getLocalPlayer());
+												WorldGroup group = betterEnderChest.getWorldGroupManager().getGroupByWorld(player.getLocalPlayer().getWorld());
+												betterEnderChest.getChestCache().getInventory(chestOwner, group, new Consumer<Inventory>() {
+													@Override
+													public void consume(Inventory inventory) {
+														for (int j = 0; j < inventory.getSize(); j = j + 1) {
+															if (inventory.getItem(j) != null) {
+																if (!inventory.getItem(j).getType().equals(Material.AIR)) {
+																	inv.setItem(j, inventory.getItem(j).clone());
+																}
+															}
+														}
+													}
+												});
+											} else {
+												inv = Bukkit.createInventory(null, 27, title);
+												for (int j = 0; j < player.getEnderChest().getSize(); j = j + 1) {
+													if (player.getEnderChest().getItem(j) != null) {
+														if (!player.getEnderChest().getItem(j).getType().equals(Material.AIR)) {
+															inv.setItem(j, player.getEnderChest().getItem(j).clone());
 														}
 													}
 												}
 											}
-										});
+										}
 
-		    							InteractiveChat.enderDisplay.put(time, inv);	
+		    							InteractiveChat.enderDisplay.put(time, inv);
 		    							if (InteractiveChat.bungeecordMode) {
 			    							if (player.isLocal()) {
 			    								try {

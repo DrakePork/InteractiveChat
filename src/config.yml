@@ -189,6 +189,7 @@ ItemDisplay:
   EnderChest:    
     #Enable players to show their ender chest
     Enabled: true
+    UseBetterEnderChest: false
     #Should the ender chest keyword be case sensitive
     CaseSensitive: false
     #The keyword to trigger the ender chest display function
