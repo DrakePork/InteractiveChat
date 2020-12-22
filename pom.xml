@@ -190,5 +190,11 @@
 			<type>javadoc</type>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>main.java.nl.rutgerkok</groupId>
+			<artifactId>betterenderchest</artifactId>
+			<version>2.5.9</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>

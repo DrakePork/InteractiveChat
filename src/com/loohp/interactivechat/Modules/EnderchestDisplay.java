@@ -10,8 +10,13 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import nl.rutgerkok.betterenderchest.BetterEnderChest;
+import nl.rutgerkok.betterenderchest.WorldGroup;
+import nl.rutgerkok.betterenderchest.chestowner.ChestOwner;
+import nl.rutgerkok.betterenderchest.io.Consumer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import com.loohp.interactivechat.ConfigManager;
@@ -122,14 +127,24 @@ public class EnderchestDisplay {
 									String title = ChatColorUtils.translateAlternateColorCodes('&', PlaceholderParser.parse(player, InteractiveChat.enderTitle));
 									
 									if (!InteractiveChat.enderDisplay.containsKey(time)) {
-										Inventory inv = Bukkit.createInventory(null, 27, title);
-		    							for (int j = 0; j < player.getEnderChest().getSize(); j = j + 1) {
-		    								if (player.getEnderChest().getItem(j) != null) {
-		    									if (!player.getEnderChest().getItem(j).getType().equals(Material.AIR)) {
-		    										inv.setItem(j, player.getEnderChest().getItem(j).clone());
-		    									}
-		    								}
-		    							}			            							
+										Inventory inv =  Bukkit.createInventory(null, 54, title);;
+
+										BetterEnderChest betterEnderChest = (BetterEnderChest) Bukkit.getPluginManager().getPlugin("BetterEnderChest");
+										ChestOwner chestOwner = betterEnderChest.getChestOwners().playerChest(player.getLocalPlayer());
+										WorldGroup group = betterEnderChest.getWorldGroupManager().getGroupByWorld(player.getLocalPlayer().getWorld());
+										betterEnderChest.getChestCache().getInventory(chestOwner, group, new Consumer<Inventory>() {
+											@Override
+											public void consume(Inventory inventory) {
+												for (int j = 0; j < inventory.getSize(); j = j + 1) {
+													if (inventory.getItem(j) != null) {
+														if (!inventory.getItem(j).getType().equals(Material.AIR)) {
+															inv.setItem(j, inventory.getItem(j).clone());
+														}
+													}
+												}
+											}
+										});
+
 		    							InteractiveChat.enderDisplay.put(time, inv);	
 		    							if (InteractiveChat.bungeecordMode) {
 			    							if (player.isLocal()) {
